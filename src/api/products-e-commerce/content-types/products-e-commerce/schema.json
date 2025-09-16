@@ -1,0 +1,141 @@
+{
+  "kind": "collectionType",
+  "collectionName": "products_e_commerces",
+  "info": {
+    "singularName": "products-e-commerce",
+    "pluralName": "products-e-commerces",
+    "displayName": "ProductsE-commerce"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "price": {
+      "type": "decimal",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "discount": {
+      "type": "decimal",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "stock": {
+      "type": "integer",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "sizes": {
+      "type": "enumeration",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "enum": [
+        "s",
+        "m",
+        "l",
+        "xl",
+        "xxl"
+      ]
+    },
+    "isPlusSize": {
+      "type": "boolean",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "colors": {
+      "type": "enumeration",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "enum": [
+        "Red, Blue, Yellow, Orange, Green, Purple, Pink, Black, White, Gray, Silver, Gold, Beige, Brown, Cyan, Aqua, Magenta, Fuchsia, Lime, Olive, Navy, Teal, Maroon, Turquoise, Indigo, Violet, Coral, Peach, Khaki, Lavender, Mint, Mustard, Chocolate, Crimson, SkyBlue, SeaGreen, Plum, Tan, Ivory, Salmon, HotPink, LightBlue, DarkGreen, LightGray, ",
+        "DarkGray, Wheat, Orchid, SlateBlue, MediumPurple, Aquamarine, Periwinkle, Chartreuse,"
+      ]
+    },
+    "images": {
+      "type": "media",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "aiTags": {
+      "type": "json",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "aiRecommendations": {
+      "type": "json",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "vectorEmbedding": {
+      "type": "json",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "aiDescription": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}
