@@ -4,7 +4,7 @@
   "info": {
     "singularName": "products-e-commerce",
     "pluralName": "products-e-commerces",
-    "displayName": "ProductsE-commerce"
+    "displayName": "Products"
   },
   "options": {
     "draftAndPublish": true
@@ -78,18 +78,6 @@
         }
       }
     },
-    "colors": {
-      "type": "enumeration",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
-      "enum": [
-        "Red, Blue, Yellow, Orange, Green, Purple, Pink, Black, White, Gray, Silver, Gold, Beige, Brown, Cyan, Aqua, Magenta, Fuchsia, Lime, Olive, Navy, Teal, Maroon, Turquoise, Indigo, Violet, Coral, Peach, Khaki, Lavender, Mint, Mustard, Chocolate, Crimson, SkyBlue, SeaGreen, Plum, Tan, Ivory, Salmon, HotPink, LightBlue, DarkGreen, LightGray, ",
-        "DarkGray, Wheat, Orchid, SlateBlue, MediumPurple, Aquamarine, Periwinkle, Chartreuse,"
-      ]
-    },
     "images": {
       "type": "media",
       "pluginOptions": {
@@ -113,6 +101,14 @@
         }
       }
     },
+    "aiDescription": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "aiRecommendations": {
       "type": "json",
       "pluginOptions": {
@@ -129,13 +125,42 @@
         }
       }
     },
-    "aiDescription": {
-      "type": "text",
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "wishlist"
+    },
+    "brands": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::brand.brand",
+      "mappedBy": "product"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "products"
+    },
+    "gender": {
+      "type": "enumeration",
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "enum": [
+        "men",
+        "women",
+        "unisex"
+      ]
+    },
+    "reviews": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::review.review",
+      "mappedBy": "product"
     }
   }
 }

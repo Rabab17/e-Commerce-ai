@@ -15,7 +15,7 @@
     }
   },
   "attributes": {
-    "statusOrder": {
+    "orderStatus": {
       "type": "enumeration",
       "pluginOptions": {
         "i18n": {
@@ -23,12 +23,15 @@
         }
       },
       "enum": [
-        "close",
         "pending",
-        "complete"
+        "confirmed",
+        "processing",
+        "shipped",
+        "delivered",
+        "cancelled"
       ]
     },
-    "paymentMethod": {
+    "paymentStatus": {
       "type": "enumeration",
       "pluginOptions": {
         "i18n": {
@@ -37,7 +40,10 @@
       },
       "enum": [
         "complete",
-        "pending"
+        "pending",
+        "paid",
+        "failed",
+        "refunded"
       ]
     },
     "totalAmount": {
@@ -55,6 +61,36 @@
           "localized": true
         }
       }
+    },
+    "orderNumber": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "orders"
+    },
+    "items": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "cart-item.cart-item",
+      "repeatable": true
+    },
+    "address": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::address.address",
+      "mappedBy": "order"
     }
   }
 }

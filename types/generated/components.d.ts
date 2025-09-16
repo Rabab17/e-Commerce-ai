@@ -1,5 +1,28 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface CartItemCartItem extends Struct.ComponentSchema {
+  collectionName: 'components_cart_item_cart_items';
+  info: {
+    displayName: 'cart item';
+  };
+  attributes: {
+    color: Schema.Attribute.String;
+    product: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::products-e-commerce.products-e-commerce'
+    >;
+    quantity: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<1>;
+    size: Schema.Attribute.Enumeration<['XXXL', 'XXL', 'XL', 'L', 'S', 'XS']>;
+  };
+}
+
 export interface SharedMedia extends Struct.ComponentSchema {
   collectionName: 'components_shared_media';
   info: {
@@ -65,6 +88,7 @@ export interface SharedSlider extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'cart-item.cart-item': CartItemCartItem;
       'shared.media': SharedMedia;
       'shared.quote': SharedQuote;
       'shared.rich-text': SharedRichText;

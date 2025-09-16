@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_cart_item_cart_items",
+  "info": {
+    "displayName": "cart item"
+  },
+  "options": {},
+  "attributes": {
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::products-e-commerce.products-e-commerce"
+    },
+    "quantity": {
+      "type": "integer",
+      "default": 1,
+      "min": 1
+    },
+    "size": {
+      "type": "enumeration",
+      "enum": [
+        "XXXL",
+        "XXL",
+        "XL",
+        "L",
+        "S",
+        "XS"
+      ]
+    },
+    "color": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

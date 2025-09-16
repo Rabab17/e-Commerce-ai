@@ -38,13 +38,27 @@
           "localized": true
         }
       },
-      "multiple": true,
+      "multiple": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
       ]
+    },
+    "description": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::products-e-commerce.products-e-commerce",
+      "inversedBy": "brands"
     }
   }
 }
