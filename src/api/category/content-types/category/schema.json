@@ -20,6 +20,12 @@
     },
     "description": {
       "type": "text"
+    },
+    "products": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::products-e-commerce.products-e-commerce",
+      "mappedBy": "category"
     }
   }
 }
