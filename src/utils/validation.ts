@@ -34,7 +34,6 @@ export class ValidationUtils {
       throw new ValidationError(`${fieldName} must not exceed ${max} characters`, fieldName);
     }
   }
-
   /**
    * Validate number range
    */
