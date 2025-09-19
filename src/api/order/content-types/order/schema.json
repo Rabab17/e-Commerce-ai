@@ -48,6 +48,9 @@
     },
     "totalAmount": {
       "type": "decimal",
+      "required": true,
+      "min": 0.01,
+      "max": 999999.99,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -56,6 +59,8 @@
     },
     "trackingNumber": {
       "type": "string",
+      "minLength": 5,
+      "maxLength": 50,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -64,6 +69,10 @@
     },
     "orderNumber": {
       "type": "string",
+      "required": true,
+      "minLength": 8,
+      "maxLength": 20,
+      "unique": true,
       "pluginOptions": {
         "i18n": {
           "localized": true

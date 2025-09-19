@@ -23,6 +23,9 @@
     },
     "sessionId": {
       "type": "string",
+      "required": true,
+      "minLength": 10,
+      "maxLength": 100,
       "pluginOptions": {
         "i18n": {
           "localized": true

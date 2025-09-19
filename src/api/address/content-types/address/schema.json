@@ -17,6 +17,9 @@
   "attributes": {
     "street": {
       "type": "text",
+      "required": true,
+      "minLength": 5,
+      "maxLength": 200,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -25,6 +28,9 @@
     },
     "city": {
       "type": "text",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -41,6 +47,9 @@
     },
     "postalCode": {
       "type": "string",
+      "required": true,
+      "minLength": 5,
+      "maxLength": 10,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -49,6 +58,9 @@
     },
     "country": {
       "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 50,
       "pluginOptions": {
         "i18n": {
           "localized": true

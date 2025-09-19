@@ -24,7 +24,7 @@
     "products": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::products-e-commerce.products-e-commerce",
+      "target": "api::product.product",
       "mappedBy": "category"
     }
   }
