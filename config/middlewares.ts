@@ -16,4 +16,17 @@ export default [
       // Global validation settings
     },
   },
+  // Custom error handling middleware
+  {
+    name: 'global::validation-error-handler',
+    config: {
+      // Validation error handler settings
+    },
+  },
+  {
+    name: 'global::error-handler',
+    config: {
+      // Error handler settings
+    },
+  },
 ];
