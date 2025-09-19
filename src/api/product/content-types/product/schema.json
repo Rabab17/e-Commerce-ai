@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "products_e_commerces",
+  "collectionName": "products",
   "info": {
-    "singularName": "products-e-commerce",
-    "pluralName": "products-e-commerces",
-    "displayName": "Products"
+    "singularName": "product",
+    "pluralName": "products",
+    "displayName": "Product"
   },
   "options": {
     "draftAndPublish": true
@@ -17,6 +17,9 @@
   "attributes": {
     "title": {
       "type": "string",
+      "required": true,
+      "minLength": 3,
+      "maxLength": 100,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -25,6 +28,9 @@
     },
     "description": {
       "type": "text",
+      "required": true,
+      "minLength": 10,
+      "maxLength": 2000,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -33,6 +39,9 @@
     },
     "price": {
       "type": "decimal",
+      "required": true,
+      "min": 0.01,
+      "max": 999999.99,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -41,6 +50,8 @@
     },
     "discount": {
       "type": "decimal",
+      "min": 0,
+      "max": 100,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -49,6 +60,9 @@
     },
     "stock": {
       "type": "integer",
+      "required": true,
+      "min": 0,
+      "max": 99999,
       "pluginOptions": {
         "i18n": {
           "localized": true

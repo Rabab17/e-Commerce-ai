@@ -67,7 +67,9 @@
       "configurable": false
     },
     "phone": {
-      "type": "string"
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 15
     },
     "gender": {
       "type": "enumeration",
@@ -78,12 +80,6 @@
     },
     "dateOfBirth": {
       "type": "date"
-    },
-    "wishlist": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::products-e-commerce.products-e-commerce",
-      "mappedBy": "user"
     },
     "addresses": {
       "type": "relation",
@@ -108,6 +104,12 @@
       "relation": "oneToMany",
       "target": "api::order.order",
       "mappedBy": "users_permissions_user"
+    },
+    "wishlist": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::product.product",
+      "mappedBy": "user"
     }
   }
 }

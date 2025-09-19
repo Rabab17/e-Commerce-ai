@@ -7,10 +7,6 @@ export interface CartItemCartItem extends Struct.ComponentSchema {
   };
   attributes: {
     color: Schema.Attribute.String;
-    product: Schema.Attribute.Relation<
-      'oneToOne',
-      'api::products-e-commerce.products-e-commerce'
-    >;
     quantity: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
