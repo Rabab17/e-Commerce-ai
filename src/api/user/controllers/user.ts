@@ -1,8 +1,15 @@
 /**
- * Enhanced user controller with role management
+ * Enhanced user controller with role management and standardized error handling
  */
 
 import { factories } from '@strapi/strapi';
+import { 
+  ValidationError, 
+  AuthenticationError, 
+  AuthorizationError, 
+  NotFoundError,
+  BusinessLogicError 
+} from '../../../utils/errors';
 
 export default factories.createCoreController('plugin::users-permissions.user', ({ strapi }) => ({
   /**
@@ -17,14 +24,32 @@ export default factories.createCoreController('plugin::users-permissions.user', 
         ctx.body = {
           data: result.data,
           meta: {
-            count: result.count
+            count: result.count,
+            timestamp: new Date().toISOString()
           }
         };
       } else {
-        ctx.throw(400, result.error);
+        throw new BusinessLogicError(result.error, {
+          operation: 'get_all_roles'
+        });
       }
     } catch (error) {
-      ctx.throw(500, 'Internal server error');
+      // Re-throw custom errors to be handled by middleware
+      if (error instanceof BusinessLogicError) {
+        throw error;
+      }
+
+      // Handle other errors
+      strapi.log.error('Get roles error:', {
+        error: error.message,
+        stack: error.stack,
+        user: ctx.state.user?.id
+      });
+      
+      throw new BusinessLogicError('Failed to fetch roles', {
+        originalError: error.message,
+        operation: 'get_all_roles'
+      });
     }
   },
 
@@ -35,17 +60,44 @@ export default factories.createCoreController('plugin::users-permissions.user', 
   async getRoleById(ctx) {
     try {
       const { id } = ctx.params;
+      
+      if (!id) {
+        throw new ValidationError('Role ID is required', {
+          field: 'id',
+          message: 'Role ID must be provided in URL parameters'
+        });
+      }
+
       const result = await strapi.service('plugin::users-permissions.user').getRoleById(id);
       
       if (result.success) {
         ctx.body = {
-          data: result.data
+          data: result.data,
+          meta: {
+            timestamp: new Date().toISOString()
+          }
         };
       } else {
-        ctx.throw(404, result.error);
+        throw new NotFoundError(result.error);
       }
     } catch (error) {
-      ctx.throw(500, 'Internal server error');
+      // Re-throw custom errors to be handled by middleware
+      if (error instanceof ValidationError || error instanceof NotFoundError) {
+        throw error;
+      }
+
+      // Handle other errors
+      strapi.log.error('Get role by ID error:', {
+        error: error.message,
+        stack: error.stack,
+        user: ctx.state.user?.id,
+        roleId: ctx.params.id
+      });
+      
+      throw new BusinessLogicError('Failed to fetch role', {
+        originalError: error.message,
+        operation: 'get_role_by_id'
+      });
     }
   },
 

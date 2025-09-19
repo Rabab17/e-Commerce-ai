@@ -1,31 +1,72 @@
 /**
- * product service
+ * Enhanced product service with comprehensive error handling
  */
 
 import { factories } from '@strapi/strapi';
 import validationService from './validation';
+import { ValidationError, BusinessLogicError, DatabaseError } from '../../../utils/errors';
 
 export default factories.createCoreService('api::product.product', ({ strapi }) => ({
   /**
    * Create a product with validation
    */
   async create(params) {
-    const { data } = params;
-    
-    // Validate and sanitize data
-    await validationService.validateProductData(data, 'create');
-    const sanitizedData = validationService.sanitizeProductData(data);
-    
-    // Check business rules
-    const warnings = await validationService.validateBusinessRules(sanitizedData);
-    if (warnings.length > 0) {
-      strapi.log.warn(`Product creation warnings: ${warnings.join(', ')}`);
-    }
+    try {
+      const { data } = params;
+      
+      if (!data) {
+        throw new ValidationError('Product data is required', {
+          field: 'data',
+          message: 'Product data must be provided'
+        });
+      }
+      
+      // Validate and sanitize data
+      await validationService.validateProductData(data, 'create');
+      const sanitizedData = validationService.sanitizeProductData(data);
+      
+      // Check business rules
+      const warnings = await validationService.validateBusinessRules(sanitizedData);
+      if (warnings.length > 0) {
+        strapi.log.warn(`Product creation warnings: ${warnings.join(', ')}`);
+      }
 
-    // Create the product
-    const result = await super.create({ ...params, data: sanitizedData });
-    
-    return result;
+      // Create the product
+      const result = await super.create({ ...params, data: sanitizedData });
+      
+      strapi.log.info('Product created successfully', {
+        productId: result.id,
+        title: result.title,
+        price: result.price
+      });
+      
+      return result;
+    } catch (error) {
+      // Re-throw validation errors
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
+      // Handle database errors
+      if (error.code && error.code.startsWith('ER_')) {
+        throw new DatabaseError('Failed to create product in database', {
+          databaseError: error.code,
+          message: error.sqlMessage
+        });
+      }
+
+      // Handle other errors
+      strapi.log.error('Product creation service error:', {
+        error: error.message,
+        stack: error.stack,
+        data: params.data
+      });
+
+      throw new BusinessLogicError('Failed to create product', {
+        originalError: error.message,
+        operation: 'create_product_service'
+      });
+    }
   },
 
   /**
