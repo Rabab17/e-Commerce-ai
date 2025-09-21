@@ -17,6 +17,7 @@
     "test:cloudinary": "node ./scripts/test-cloudinary-config.js",
     "reset:cloudinary": "node ./scripts/reset-cloudinary.js",
     "start": "strapi start",
+    "vercel-build": "node vercel-build.js",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
