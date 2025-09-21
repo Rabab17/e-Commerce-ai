@@ -1,6 +1,29 @@
 export default [
   'strapi::errors',
-  'strapi::security',
+  {
+    name: 'strapi::security',
+    config: {
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          'img-src': [
+            "'self'",
+            'data:',
+            'blob:',
+            'res.cloudinary.com',
+            'https://res.cloudinary.com',
+          ],
+          'media-src': [
+            "'self'",
+            'data:',
+            'blob:',
+            'res.cloudinary.com',
+            'https://res.cloudinary.com',
+          ],
+        },
+      },
+    },
+  },
   'strapi::cors',
   'strapi::poweredBy',
   'strapi::logger',
@@ -9,6 +32,13 @@ export default [
   'strapi::session',
   'strapi::favicon',
   'strapi::public',
+  // Cloudinary image fix middleware
+  {
+    name: 'global::cloudinary-fix',
+    config: {
+      // Cloudinary image display fix settings
+    },
+  },
   // Custom validation middleware
   {
     name: 'global::validation',
