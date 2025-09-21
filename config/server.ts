@@ -8,7 +8,13 @@ export default ({ env }) => ({
   cors: {
     enabled: true,
     headers: '*',
-    origin: ['http://localhost:1337', 'http://localhost:3000', 'https://res.cloudinary.com']
+    origin: [
+      'http://localhost:1337', 
+      'http://localhost:3000', 
+      'https://res.cloudinary.com',
+      'https://*.vercel.app',
+      'https://*.vercel.com'
+    ]
   },
   // إعدادات الأمان للصور
   security: {
