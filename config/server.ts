@@ -4,4 +4,20 @@ export default ({ env }) => ({
   app: {
     keys: env.array('APP_KEYS'),
   },
+  // إضافة إعدادات CORS للسماح بعرض الصور من Cloudinary
+  cors: {
+    enabled: true,
+    headers: '*',
+    origin: ['http://localhost:1337', 'http://localhost:3000', 'https://res.cloudinary.com']
+  },
+  // إعدادات الأمان للصور
+  security: {
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        'img-src': ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com'],
+        'media-src': ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com'],
+      },
+    },
+  },
 });

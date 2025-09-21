@@ -8,7 +8,13 @@ module.exports = ({ env }) => ({
         api_secret: env('CLOUDINARY_SECRET'),
       },
       actionOptions: {
-        upload: {},
+        upload: {
+          folder: 'ecommerce-ai',
+          use_filename: true,
+          unique_filename: true,
+          overwrite: false,
+          resource_type: 'auto',
+        },
         delete: {},
       },
     },

@@ -10,8 +10,21 @@ import {
   NotFoundError,
   BusinessLogicError 
 } from '../../../utils/errors';
+import { ImageProcessor, imageProcessingMiddleware } from '../../../utils/image-processing';
 
 export default factories.createCoreController('api::product.product', ({ strapi }) => ({
+  /**
+   * Get Cloudinary cloud name safely
+   */
+  getCloudinaryCloudName(): string | null {
+    try {
+      const cloudName = strapi.config.get('plugin.upload.providerOptions.cloud_name') as string;
+      return cloudName && typeof cloudName === 'string' ? cloudName : null;
+    } catch (error) {
+      strapi.log.warn('Failed to get Cloudinary cloud name:', error.message);
+      return null;
+    }
+  },
   /**
    * Create product with enhanced error handling
    */
@@ -147,20 +160,38 @@ export default factories.createCoreController('api::product.product', ({ strapi 
   },
 
   /**
-   * Get products with enhanced filtering
+   * Get products with enhanced filtering and image processing
    */
   async find(ctx) {
     try {
       const result = await super.find(ctx);
       
-      // Add computed fields to each product
+      // Get Cloudinary cloud name from environment
+      const cloudName = this.getCloudinaryCloudName();
+      
+      // Add computed fields and process images for each product
       if (result.data && Array.isArray(result.data)) {
         result.data = result.data.map(product => {
           // Check if product and attributes exist before accessing properties
-          if (product && product.attributes && 
-              product.attributes.price && product.attributes.discount) {
-            product.attributes.discountedPrice = 
-              product.attributes.price * (1 - product.attributes.discount / 100);
+          if (product && product.attributes) {
+            // Add discounted price calculation
+            if (product.attributes.price && product.attributes.discount) {
+              product.attributes.discountedPrice = 
+                product.attributes.price * (1 - product.attributes.discount / 100);
+            }
+            
+            // Process images if they exist and cloudName is valid
+            if (product.attributes.images && Array.isArray(product.attributes.images) && cloudName) {
+              try {
+                product.attributes.images = ImageProcessor.processImages(
+                  product.attributes.images,
+                  cloudName
+                );
+              } catch (imageError) {
+                strapi.log.warn('Image processing error:', imageError.message);
+                // Continue without processed images rather than failing the entire request
+              }
+            }
           }
           return product;
         });
@@ -182,17 +213,33 @@ export default factories.createCoreController('api::product.product', ({ strapi 
   },
 
   /**
-   * Get single product with enhanced data
+   * Get single product with enhanced data and image processing
    */
   async findOne(ctx) {
     try {
       const result = await super.findOne(ctx);
       
       if (result.data && result.data.attributes) {
+        // Get Cloudinary cloud name from environment
+        const cloudName = this.getCloudinaryCloudName();
+        
         // Add computed fields
         if (result.data.attributes.price && result.data.attributes.discount) {
           result.data.attributes.discountedPrice = 
             result.data.attributes.price * (1 - result.data.attributes.discount / 100);
+        }
+        
+        // Process images if they exist and cloudName is valid
+        if (result.data.attributes.images && Array.isArray(result.data.attributes.images) && cloudName) {
+          try {
+            result.data.attributes.images = ImageProcessor.processImages(
+              result.data.attributes.images,
+              cloudName
+            );
+          } catch (imageError) {
+            strapi.log.warn('Image processing error:', imageError.message);
+            // Continue without processed images rather than failing the entire request
+          }
         }
         
         // Add related data - check if category exists and has data
