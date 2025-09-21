@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "products_e_commerces",
+  "collectionName": "products",
   "info": {
-    "singularName": "products-e-commerce",
-    "pluralName": "products-e-commerces",
-    "displayName": "Products"
+    "singularName": "product",
+    "pluralName": "products",
+    "displayName": "Product"
   },
   "options": {
     "draftAndPublish": true
@@ -21,7 +21,10 @@
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "minLength": 3,
+      "maxLength": 100,
+      "required": true
     },
     "description": {
       "type": "text",
@@ -29,7 +32,10 @@
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "minLength": 10,
+      "maxLength": 2000,
+      "required": true
     },
     "price": {
       "type": "decimal",
@@ -37,7 +43,10 @@
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "required": true,
+      "min": 0.01,
+      "max": 999999.99
     },
     "discount": {
       "type": "decimal",
@@ -45,7 +54,9 @@
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "min": 0,
+      "max": 100
     },
     "stock": {
       "type": "integer",
@@ -53,22 +64,10 @@
         "i18n": {
           "localized": true
         }
-      }
-    },
-    "sizes": {
-      "type": "enumeration",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
       },
-      "enum": [
-        "s",
-        "m",
-        "l",
-        "xl",
-        "xxl"
-      ]
+      "required": true,
+      "min": 0,
+      "max": 99999
     },
     "isPlusSize": {
       "type": "boolean",
@@ -161,6 +160,22 @@
       "relation": "oneToMany",
       "target": "api::review.review",
       "mappedBy": "product"
+    },
+    "colors": {
+      "type": "json",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "size": {
+      "type": "json",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }

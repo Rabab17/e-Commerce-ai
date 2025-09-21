@@ -57,7 +57,7 @@
     "product": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::products-e-commerce.products-e-commerce",
+      "target": "api::product.product",
       "inversedBy": "brands"
     }
   }

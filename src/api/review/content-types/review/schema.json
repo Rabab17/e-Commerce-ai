@@ -11,13 +11,16 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "raing": {
+    "rating": {
       "type": "integer",
-      "min": 0,
+      "required": true,
+      "min": 1,
       "max": 5
     },
     "comment": {
-      "type": "string"
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 1000
     },
     "users_permissions_user": {
       "type": "relation",
@@ -25,15 +28,15 @@
       "target": "plugin::users-permissions.user",
       "inversedBy": "reviews"
     },
-    "product": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::products-e-commerce.products-e-commerce",
-      "inversedBy": "reviews"
-    },
     "verified": {
       "type": "boolean",
       "default": false
+    },
+    "product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "reviews"
     }
   }
 }

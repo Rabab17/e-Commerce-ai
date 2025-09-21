@@ -5,11 +5,6 @@
   },
   "options": {},
   "attributes": {
-    "product": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::products-e-commerce.products-e-commerce"
-    },
     "quantity": {
       "type": "integer",
       "default": 1,
