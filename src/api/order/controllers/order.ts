@@ -22,14 +22,19 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         throw new AuthenticationError('Authentication required to create orders');
       }
 
-      // Validate required fields
+      // Validate request body structure and order fields (detailed)
       const { data } = ctx.request.body;
       if (!data) {
-        throw new ValidationError('Request data is required', {
-          field: 'data',
-          message: 'Request body must contain data object'
-        });
+        throw new ValidationError('Validation failed', { data: ['is required'] });
       }
+
+      ctx.validateRequestAt('data', {
+        orderNumber: { required: true, minLength: 8, maxLength: 20 },
+        totalAmount: { required: true, min: 0.01, max: 999999.99 },
+        items: { required: true, isArray: true, minItems: 1 },
+        orderStatus: { enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'] },
+        paymentStatus: { enum: ['complete', 'pending', 'paid', 'failed', 'refunded'] }
+      });
 
       // Validate order data
       if (!data.orderNumber) {
@@ -92,6 +97,15 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
       // Check authentication
       if (!ctx.state.user) {
         throw new AuthenticationError('Authentication required to update orders');
+      }
+
+      // Optional: validate updates if payload is present
+      if (ctx.request.body && ctx.request.body.data) {
+        ctx.validateRequestAt('data', {
+          totalAmount: { min: 0.01, max: 999999.99 },
+          orderStatus: { enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'] },
+          paymentStatus: { enum: ['complete', 'pending', 'paid', 'failed', 'refunded'] }
+        });
       }
 
       const result = await super.update(ctx);

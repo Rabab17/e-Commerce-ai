@@ -118,10 +118,14 @@ export default factories.createCoreController('plugin::users-permissions.user', 
           }
         };
       } else {
-        ctx.throw(400, result.error);
+        throw new BusinessLogicError(result.error, { operation: 'get_users_by_role', roleId });
       }
     } catch (error) {
-      ctx.throw(500, 'Internal server error');
+      throw new BusinessLogicError('Failed to fetch users by role', {
+        originalError: error.message,
+        operation: 'get_users_by_role',
+        roleId: ctx.params.roleId
+      });
     }
   },
 
@@ -139,10 +143,14 @@ export default factories.createCoreController('plugin::users-permissions.user', 
           data: result.data
         };
       } else {
-        ctx.throw(404, result.error);
+        throw new NotFoundError(result.error);
       }
     } catch (error) {
-      ctx.throw(500, 'Internal server error');
+      throw new BusinessLogicError('Failed to fetch user permissions', {
+        originalError: error.message,
+        operation: 'get_user_permissions',
+        userId: ctx.params.id
+      });
     }
   },
 
@@ -155,7 +163,10 @@ export default factories.createCoreController('plugin::users-permissions.user', 
       const { name, description, type } = ctx.request.body;
       
       if (!name || !type) {
-        ctx.throw(400, 'Name and type are required');
+        throw new ValidationError('Validation failed', {
+          name: !name ? ['is required'] : undefined,
+          type: !type ? ['is required'] : undefined
+        });
       }
 
       const result = await strapi.service('plugin::users-permissions.user').createRole({
@@ -170,10 +181,13 @@ export default factories.createCoreController('plugin::users-permissions.user', 
         };
         ctx.status = 201;
       } else {
-        ctx.throw(400, result.error);
+        throw new BusinessLogicError(result.error, { operation: 'create_role' });
       }
     } catch (error) {
-      ctx.throw(500, 'Internal server error');
+      throw new BusinessLogicError('Failed to create role', {
+        originalError: error.message,
+        operation: 'create_role'
+      });
     }
   },
 
@@ -187,7 +201,9 @@ export default factories.createCoreController('plugin::users-permissions.user', 
       const { roleId } = ctx.request.body;
       
       if (!roleId) {
-        ctx.throw(400, 'Role ID is required');
+        throw new ValidationError('Validation failed', {
+          roleId: ['is required']
+        });
       }
 
       const result = await strapi.service('plugin::users-permissions.user').assignRoleToUser(id, roleId);
@@ -197,10 +213,14 @@ export default factories.createCoreController('plugin::users-permissions.user', 
           data: result.data
         };
       } else {
-        ctx.throw(400, result.error);
+        throw new BusinessLogicError(result.error, { operation: 'assign_role', userId: id, roleId });
       }
     } catch (error) {
-      ctx.throw(500, 'Internal server error');
+      throw new BusinessLogicError('Failed to assign role', {
+        originalError: error.message,
+        operation: 'assign_role',
+        userId: ctx.params.id
+      });
     }
   }
 }));
