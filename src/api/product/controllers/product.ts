@@ -41,14 +41,21 @@ export default factories.createCoreController('api::product.product', ({ strapi 
         throw new AuthorizationError('Insufficient permissions to create products');
       }
 
-      // Validate required fields
+      // Validate request body structure and product fields (detailed)
       const { data } = ctx.request.body;
       if (!data) {
-        throw new ValidationError('Request data is required', {
-          field: 'data',
-          message: 'Request body must contain data object'
-        });
+        throw new ValidationError('Validation failed', { data: ['is required'] });
       }
+
+      // Detailed validation using global validation middleware
+      // Validate mandatory fields presence and constraints
+      ctx.validateRequestAt('data', {
+        title: { required: true, minLength: 3, maxLength: 100 },
+        description: { required: true, minLength: 10, maxLength: 2000 },
+        price: { required: true, min: 0.01, max: 999999.99 },
+        stock: { required: true, min: 0, max: 99999 },
+        discount: { min: 0, max: 100 },
+      });
 
       const result = await super.create(ctx);
       
@@ -95,13 +102,13 @@ export default factories.createCoreController('api::product.product', ({ strapi 
     try {
       // Check authentication
       if (!ctx.state.user) {
-        return ctx.unauthorized('Authentication required');
+        throw new AuthenticationError('Authentication required');
       }
 
       // Check permissions
       const userRole = ctx.state.user.role?.type;
       if (userRole !== 'authenticated' && userRole !== 'admin') {
-        return ctx.forbidden('Insufficient permissions');
+        throw new AuthorizationError('Insufficient permissions');
       }
 
       const result = await super.update(ctx);
@@ -120,12 +127,14 @@ export default factories.createCoreController('api::product.product', ({ strapi 
       return result;
     } catch (error) {
       strapi.log.error('Product update error:', error);
-      
-      if (error.message.includes('Validation failed')) {
-        return ctx.badRequest(error.message);
+      if (error instanceof ValidationError || error instanceof AuthenticationError || error instanceof AuthorizationError) {
+        throw error;
       }
-      
-      return ctx.internalServerError('Failed to update product');
+      throw new BusinessLogicError('Failed to update product', {
+        originalError: error.message,
+        operation: 'update_product',
+        productId: ctx.params.id
+      });
     }
   },
 
@@ -136,13 +145,13 @@ export default factories.createCoreController('api::product.product', ({ strapi 
     try {
       // Check authentication
       if (!ctx.state.user) {
-        return ctx.unauthorized('Authentication required');
+        throw new AuthenticationError('Authentication required');
       }
 
       // Check permissions
       const userRole = ctx.state.user.role?.type;
       if (userRole !== 'authenticated' && userRole !== 'admin') {
-        return ctx.forbidden('Insufficient permissions');
+        throw new AuthorizationError('Insufficient permissions');
       }
 
       const result = await super.delete(ctx);
@@ -155,7 +164,14 @@ export default factories.createCoreController('api::product.product', ({ strapi 
       };
     } catch (error) {
       strapi.log.error('Product deletion error:', error);
-      return ctx.internalServerError('Failed to delete product');
+      if (error instanceof ValidationError || error instanceof AuthenticationError || error instanceof AuthorizationError) {
+        throw error;
+      }
+      throw new BusinessLogicError('Failed to delete product', {
+        originalError: error.message,
+        operation: 'delete_product',
+        productId: ctx.params.id
+      });
     }
   },
 

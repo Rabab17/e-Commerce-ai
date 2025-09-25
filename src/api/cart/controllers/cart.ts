@@ -22,29 +22,16 @@ export default factories.createCoreController('api::cart.cart', ({ strapi }) => 
         throw new AuthenticationError('Authentication required to create carts');
       }
 
-      // Validate required fields
+      // Validate request body structure and cart fields (detailed)
       const { data } = ctx.request.body;
       if (!data) {
-        throw new ValidationError('Request data is required', {
-          field: 'data',
-          message: 'Request body must contain data object'
-        });
+        throw new ValidationError('Validation failed', { data: ['is required'] });
       }
 
-      // Validate cart data
-      if (!data.sessionId) {
-        throw new ValidationError('Session ID is required', {
-          field: 'sessionId',
-          message: 'Session ID must be provided'
-        });
-      }
-
-      if (!data.items || !Array.isArray(data.items) || data.items.length === 0) {
-        throw new ValidationError('Cart items are required', {
-          field: 'items',
-          message: 'Cart must contain at least one item'
-        });
-      }
+      ctx.validateRequestAt('data', {
+        sessionId: { required: true, minLength: 10, maxLength: 100 },
+        items: { required: true, isArray: true, minItems: 1 }
+      });
 
       const result = await super.create(ctx);
       
@@ -92,6 +79,12 @@ export default factories.createCoreController('api::cart.cart', ({ strapi }) => 
       // Check authentication
       if (!ctx.state.user) {
         throw new AuthenticationError('Authentication required to update carts');
+      }
+
+      if (ctx.request.body && ctx.request.body.data) {
+        ctx.validateRequestAt('data', {
+          items: { isArray: true, minItems: 1 }
+        });
       }
 
       const result = await super.update(ctx);
