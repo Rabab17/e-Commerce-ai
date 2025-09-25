@@ -2,8 +2,7 @@ export default ({ env }) => ({
   host: env('HOST', '0.0.0.0'),
   port: env.int('PORT', 1337),
   app: {
-    // keys: env.array('APP_KEYS'),
-    keys: env('APP_KEYS').split(','),
+    keys: env.array('APP_KEYS'),
   },
   // إضافة إعدادات CORS للسماح بعرض الصور من Cloudinary
   cors: {
